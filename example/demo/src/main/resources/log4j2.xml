@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" dest="err">
+    <Appenders>
+        <Console name="stdout">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%t] %logger{1.} : %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <asyncRoot level="info" includeLocation="false">
+            <AppenderRef ref="stdout"/>
+        </asyncRoot>
+        <asyncLogger name="org.springframework.web" level="info" additivity="false" includeLocation="false">
+            <AppenderRef ref="stdout"/>
+        </asyncLogger>
+        <asyncLogger name="com.example.demo" level="debug" additivity="false" includeLocation="false">
+            <AppenderRef ref="stdout"/>
+        </asyncLogger>
+    </Loggers>
+</Configuration>

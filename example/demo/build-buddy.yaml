@@ -1,0 +1,16 @@
+version: "2.3"
+
+volumes:
+  caches:
+    
+services:
+  demo:
+    image: build-buddy
+    command: [ "demo", "com.example.demo.Application" ]
+    ports:
+      - "2222:22"
+      - "8888:8080"
+      - "9999:9999"
+    volumes:
+#      - .:/home/user/src/:ro
+      - caches:/home/user/.gradle/caches/

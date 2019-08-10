@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven'
+    id 'application'
+    id 'project-report'
+
+    id 'org.springframework.boot' version '2.2.0.M5'
+    id 'me.champeau.gradle.jmh' version '0.4.8'
+    id 'com.google.protobuf' version '0.8.10'
+}
+
+apply from: 'gradle/source-sets.gradle'
+apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/docker.gradle'
+
+sourceCompatibility = '12'
+
+application {
+    mainClassName "${project.mainClassName}"
+}
+
+springBoot {
+    buildInfo()
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    classifier = 'boot'
+    launchScript()
+}
+
+bootRun {
+    // Pass properties to spring boot run (e.g. -Dspring.profiles.active=default)
+    systemProperties = System.properties
+    jvmArgs '-noverify', '-XX:TieredStopAtLevel=1'
+    standardInput = System.in
+}
+
+test {
+    useJUnitPlatform()
+}

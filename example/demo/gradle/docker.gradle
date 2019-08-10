@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:4.10.0'
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+task copyAppSh(type: Copy) {
+    from "${projectDir}/dist/app.sh"
+    into "${buildDir}/docker/opt/"
+}
+
+task copyLibs(type: Copy) {
+    dependsOn installDist
+    from ("${buildDir}/install/${project.name}/lib/") {
+        exclude "${project.name}-*.jar"
+        exclude "spring-boot-devtools-*.jar"
+    }
+    into "${buildDir}/docker/opt/libs/"
+}
+
+task extractJar(type: Copy) {
+    dependsOn jar
+    from(zipTree(jar.outputs.files.singleFile))
+    into "${buildDir}/docker/opt/classes/"
+}
+
+task createDockerfile(type: Dockerfile) {
+    from "azul/zulu-openjdk-alpine:12"
+    exposePort 8080
+    exposePort 9999
+    copyFile "opt/app.sh", "/opt/"
+    copyFile "opt/libs/", "/opt/libs/"
+    copyFile "opt/classes/", "/opt/classes/"
+    environmentVariable "MAIN_CLASS", "${project.mainClassName}"
+    workingDir "/opt"
+    defaultCommand "/opt/app.sh"
+}
+
+task buildImage(type: DockerBuildImage) {
+    dependsOn copyAppSh, copyLibs, extractJar, createDockerfile
+    tags.add("${project.group}/${project.name}:latest")
+    tags.add("${project.group}/${project.name}:${project.version}")
+}

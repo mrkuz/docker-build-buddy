@@ -1,0 +1,32 @@
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java/'
+            srcDir 'build/generated/source/proto/main/java/'
+        }
+        proto {
+            srcDir 'src/main/proto/'
+            include '**/*.proto'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java/'
+            srcDir 'build/generated/source/proto/test/java/'
+        }
+        proto {
+            srcDir 'src/test/proto/'
+            include '**/*.proto'
+        }
+    }
+    jmh {
+        java {
+            srcDir 'src/jmh/java/'
+            srcDir 'build/generated/source/proto/jmh/java/'
+        }
+        proto {
+            srcDir 'src/jmh/proto/'
+            include '**/*.proto'
+        }
+    }
+}
